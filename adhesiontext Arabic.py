@@ -9,8 +9,8 @@ import GlyphsApp
 from random import shuffle
 import codecs
 
-theScriptLoc = os.path.realpath( os.path.join(os.getcwd(), os.path.dirname(__file__)) )
-textFileLocation = theScriptLoc+"/adhesiontext Arabic Dictionary.txt"
+theScriptLoc = os.path.dirname(os.path.abspath(__file__))
+dicFileLocation = os.path.join(theScriptLoc, 'adhesiontext Arabic Dictionary.txt')
 
 class adhesiontextArabic( object ):
 	def __init__( self ):
@@ -22,25 +22,18 @@ class adhesiontextArabic( object ):
 		btnX = 80
 		btnY = 22
 		windowWidth  = sp*4+txX+195+btnX
-		windowHeight = sp*4+txY*4
+		windowHeight = sp*2.5+txY
 		self.w = vanilla.FloatingWindow(
 			( windowWidth, windowHeight ), # default window size
 			"adhesiontext Arabic", # window title
 			autosaveName = "com.Tosche.adhesiontextArabic.mainwindow" # stores last window position and size
 		)
 		
-		arabicDic = open(textFileLocation, 'r')
-		warning = "Source text file has %s words. It's faster to random-shrink the words list first." % len([l[:-1] for l in arabicDic.readlines()])
+		arabicDic = open(dicFileLocation, 'r')
 
 		# UI elements:
 		self.w.text1 = vanilla.TextBox( (sp, sp*1+txY*0, txX, txY), "Words: 25", sizeStyle='regular' )
 		self.w.words = vanilla.Slider( (sp+txX, sp*1+txY*0, 195, txY), value=25, minValue=5, maxValue=200, callback=self.sliderCallback)
-
-		self.w.text2 = vanilla.TextBox( (sp, sp*2+txY*1, -sp, txY*2), warning, sizeStyle='regular' )
-
-		self.w.text3 = vanilla.TextBox( (sp, sp*3+txY*3, txX, txY), "Shrink to", sizeStyle='regular' )
-		self.w.shrink = vanilla.EditText( (sp+65, sp*3+txY*3-2, 60, edY), "10000", sizeStyle = 'regular', callback=self.textCallback)
-		self.w.text4 = vanilla.TextBox( (sp*2+60+60, sp*3+txY*3, txX, txY), "words", sizeStyle='regular' )
 
 		# Run Button:
 		self.w.runButton = vanilla.Button((-sp-btnX, sp, -sp, btnY), "Get text", sizeStyle='regular', callback=self.typeset )
@@ -57,7 +50,6 @@ class adhesiontextArabic( object ):
 	def SavePreferences( self, sender ):
 		try:
 			Glyphs.defaults["com.Tosche.adhesiontextArabic.words"] = int(self.w.words.get())
-			Glyphs.defaults["com.Tosche.adhesiontextArabic.shrink"] = int(self.w.shrink.get())
 		except:
 			return False
 			
@@ -65,10 +57,8 @@ class adhesiontextArabic( object ):
 
 	def LoadPreferences( self ):
 		try:
-			# print Glyphs.defaults["com.Tosche.adhesiontextArabic.words"]
-			# print Glyphs.defaults["com.Tosche.adhesiontextArabic.shrink"]
 			self.w.text1.set( "Words: %s" % Glyphs.defaults["com.Tosche.adhesiontextArabic.words"] )
-			self.w.shrink.set( str(Glyphs.defaults["com.Tosche.adhesiontextArabic.shrink"]) )
+			self.w.words.set(Glyphs.defaults["com.Tosche.adhesiontextArabic.words"])
 		except:
 			return False
 			
@@ -98,9 +88,9 @@ class adhesiontextArabic( object ):
 			f.disableUpdateInterface() # suppresses UI updates in Font View
 
 			necessaryWords = int(self.w.words.get())
-			sourceWordsCount = int(self.w.shrink.get())
+			sourceWordsCount = 10000 # the dictionary will be random-shrunk to this number of words
 
-			arabicDic = codecs.open(textFileLocation, 'r', encoding='utf-8')
+			arabicDic = codecs.open(dicFileLocation, 'r', encoding='utf-8')
 			arabicWords = [l[:-1] for l in arabicDic.readlines()]
 			shuffle(arabicWords)
 			arabicWords = arabicWords[:sourceWordsCount]
@@ -177,9 +167,3 @@ class adhesiontextArabic( object ):
 			print "adhesiontext Arabic Error: %s" % e
 
 adhesiontextArabic()
-
-
-
-
-
-
