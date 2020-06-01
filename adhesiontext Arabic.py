@@ -1,5 +1,6 @@
 #MenuTitle: adhesiontext Arabic
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, unicode_literals
 __doc__="""
 adhesiontext Arabic that is sensitive to positional forms.
 """
@@ -41,7 +42,9 @@ class adhesiontextArabic( object ):
 		
 		# Load Settings:
 		if not self.LoadPreferences():
-			print "Note: 'adhesiontext Arabic' could not load preferences. Will resort to defaults"
+			print("Note: 'adhesiontext Arabic' could not load preferences. Will resort to defaults")
+
+		self.w.words.getNSSlider().setVertical_(False)
 
 		# Open window and focus on it:
 		self.w.open()
@@ -78,7 +81,7 @@ class adhesiontextArabic( object ):
 				pass
 		except:
 			Glyphs.showMacroWindow()
-			print "ENTER A NUMBER!"
+			print("ENTER A NUMBER!")
 
 	def typeset( self, sender ):
 		try:
@@ -152,7 +155,7 @@ class adhesiontextArabic( object ):
 
 			shuffle(arabicWordsSimpler2)
 			if len(arabicWordsSimpler2) < necessaryWords:
-				arabicWordsSimpler2 = arabicWordsSimpler2 * ((necessaryWords / len(arabicWordsSimpler2)) + 1)
+				arabicWordsSimpler2 = arabicWordsSimpler2 * (int(necessaryWords / len(arabicWordsSimpler2)) + 1)
 				shuffle(arabicWordsSimpler2)
 			arabicWordsSimpler2 = arabicWordsSimpler2[:necessaryWords]
 			if f.currentTab == None:
@@ -161,9 +164,9 @@ class adhesiontextArabic( object ):
 
 			f.enableUpdateInterface() # re-enables UI updates in Font View
 
-		except Exception, e:
+		except Exception as e:
 			# brings macro window to front and reports error:
 			Glyphs.showMacroWindow()
-			print "adhesiontext Arabic Error: %s" % e
+			print("adhesiontext Arabic Error: %s" % e)
 
 adhesiontextArabic()
